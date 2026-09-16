@@ -20,7 +20,7 @@ class PeValidationResult(BaseModel):
 class InferenceResult(BaseModel):
     """Stable adapter contract for the future XGBoost and MalConv2 models."""
 
-    stage1_result: Literal["Normal", "Malware"]
+    stage1_result: Literal["Normal", "Suspicious", "Malware"]
     stage1_confidence: float = Field(ge=0, le=1)
     family_class: str | None = None
     family_confidence: float | None = Field(default=None, ge=0, le=1)
@@ -33,7 +33,7 @@ class AnalysisResultRow(BaseModel):
     filename: str
     relative_path: str | None = None
     pe_validation: PeValidationResult
-    stage1_result: Literal["Normal", "Malware"] | None = None
+    stage1_result: Literal["Normal", "Suspicious", "Malware"] | None = None
     stage1_confidence: float | None = Field(default=None, ge=0, le=1)
     family_class: str | None = None
     family_confidence: float | None = Field(default=None, ge=0, le=1)

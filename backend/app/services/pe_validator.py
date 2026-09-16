@@ -22,7 +22,7 @@ def validate_pe(file_bytes: bytes) -> PeValidationResult:
         return PeValidationResult(
             is_valid=False,
             error_code="NOT_MZ",
-            error_reason="MZ 시그니처가 없는 Windows PE 파일입니다.",
+            error_reason="PE 파일이 아닙니다.",
         )
 
     # e_lfanew stores the PE-header position as a 32-bit little-endian integer.

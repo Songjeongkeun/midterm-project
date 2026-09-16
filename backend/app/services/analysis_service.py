@@ -17,6 +17,7 @@ from app.storage.job_store import JobNotFoundError, JobStore
 from .byte_preprocessor import prepare_raw_byte_sequence
 from .model_inference_service import MockModelInferenceService
 from .pe_validator import validate_pe
+from .stage1_xgboost_service import Stage1ModelLoadError, Stage1XGBoostService
 
 
 MAX_FILE_BYTES = 16 * 1024 * 1024
@@ -48,9 +49,21 @@ def safe_relative_path(raw_path: str) -> str:
 
 
 class AnalysisManager:
-    def __init__(self) -> None:
+    def __init__(self, stage1_service: Stage1XGBoostService | None = None) -> None:
         self.store = JobStore()
-        self.inference = MockModelInferenceService()
+        # The 1차 model is a real exported XGBoost bundle. The 2차 classifier is
+        # still a deterministic UI mock until its MalConv2 artifact is delivered.
+        if stage1_service is not None:
+            self.stage1 = stage1_service
+            self.stage1_load_error: str | None = None
+        else:
+            try:
+                self.stage1 = Stage1XGBoostService()
+                self.stage1_load_error = None
+            except Stage1ModelLoadError as error:
+                self.stage1 = None
+                self.stage1_load_error = str(error)
+        self.stage2 = MockModelInferenceService()
         self._inputs: dict[str, list[StoredInput]] = {}
         self._job_dirs: dict[str, Path] = {}
 
@@ -187,24 +200,38 @@ class AnalysisManager:
         job.progress.valid_pe_files += 1
         try:
             job.progress.stage = AnalysisStage.PREPARING_SEQUENCE
-            sequence = prepare_raw_byte_sequence(file_bytes)
             job.progress.stage = AnalysisStage.CLASSIFYING_STAGE1
-            stage1_result, stage1_confidence = self.inference.predict_stage1(sequence)
+            if self.stage1 is None:
+                raise RuntimeError(self.stage1_load_error or "1차 모델을 사용할 수 없습니다.")
+            stage1 = self.stage1.analyze_file(job_dir / f"{source.index:05d}.bin")
+            if stage1.result == "Error":
+                return AnalysisResultRow(
+                    index=source.index,
+                    filename=source.filename,
+                    relative_path=source.relative_path,
+                    pe_validation=validation,
+                    status=ResultStatus.UNSUPPORTED_ERROR,
+                    error_reason=stage1.error_reason,
+                )
 
             family_class = None
             family_confidence = None
             is_unknown = False
-            if stage1_result == "Malware":
+            if stage1.needs_stage2:
+                # Stage 2 uses raw bytes, not stage 1's 341 static features.
+                job.progress.stage = AnalysisStage.PREPARING_SEQUENCE
+                sequence = prepare_raw_byte_sequence(file_bytes)
                 job.progress.stage = AnalysisStage.CLASSIFYING_STAGE2
-                family_class, family_confidence, is_unknown = self.inference.predict_stage2(sequence)
+                family_class, family_confidence, is_unknown = self.stage2.predict_stage2(sequence)
 
             return AnalysisResultRow(
                 index=source.index,
                 filename=source.filename,
                 relative_path=source.relative_path,
                 pe_validation=validation,
-                stage1_result=stage1_result,
-                stage1_confidence=stage1_confidence,
+                stage1_result=stage1.result,
+                # This is XGBoost's uncalibrated malware score, not a guarantee.
+                stage1_confidence=stage1.malware_score,
                 family_class=family_class,
                 family_confidence=family_confidence,
                 is_unknown=is_unknown,

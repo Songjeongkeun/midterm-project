@@ -6,6 +6,7 @@ from fastapi import UploadFile
 from app.services.analysis_service import AnalysisManager
 from app.services.byte_preprocessor import prepare_raw_byte_sequence
 from app.services.pe_validator import validate_pe
+from app.services.stage1_xgboost_service import Stage1Prediction
 
 
 def valid_pe() -> bytes:
@@ -24,9 +25,10 @@ def test_accepts_minimally_valid_pe() -> None:
 
 
 def test_rejects_extension_like_non_pe_bytes() -> None:
-    result = validate_pe(b"#!/bin/sh\necho never execute uploaded files")
+    result = validate_pe(b"not-a-pe-file" * 10)
     assert result.is_valid is False
-    assert result.error_code == "FILE_TOO_SHORT"
+    assert result.error_code == "NOT_MZ"
+    assert result.error_reason == "PE 파일이 아닙니다."
 
 
 def test_rejects_out_of_range_pe_offset() -> None:
@@ -46,7 +48,13 @@ def test_manager_analyzes_a_valid_pe_without_executing_it() -> None:
     """Exercise upload storage, validation and mock stages with synthetic bytes."""
 
     async def scenario() -> None:
-        manager = AnalysisManager()
+        class FixedStage1:
+            """Keep this orchestration test independent from external model weights."""
+
+            def analyze_file(self, _file_path):
+                return Stage1Prediction("Normal", 0.02, False)
+
+        manager = AnalysisManager(stage1_service=FixedStage1())
         upload = UploadFile(file=BytesIO(valid_pe()), filename="sample.exe")
         job = await manager.create_job(
             input_kind="file",

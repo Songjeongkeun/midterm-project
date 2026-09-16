@@ -8,11 +8,11 @@ const labels = [
 // 서버가 계산한 수치를 그대로 사용해, 브라우저가 진행률을 임의로 추측하지 않는다.
 export default function ProgressSummary({ progress }) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-2 divide-x divide-y divide-[#F3F4F6] overflow-hidden rounded-xl border border-[#E5E7EB] bg-white sm:grid-cols-4">
       {labels.map(([label, key]) => (
-        <div key={key} className="rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-center">
-          <p className="text-xs text-slate-400">{label}</p>
-          <p className="mt-1 text-xl font-bold text-white">{progress[key]}</p>
+        <div key={key} className="p-3 text-center">
+          <p className="text-xs text-[#6B7280]">{label}</p>
+          <p className="mt-1 text-xl font-bold text-[#111827]">{progress[key]}</p>
         </div>
       ))}
     </div>

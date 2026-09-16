@@ -9,7 +9,8 @@ export default function StatusBadge({ status }) {
   }
 
   return (
-    <span className="inline-flex rounded-full border border-[#92400E] bg-[#FEF3C7] px-2.5 py-1 text-xs font-bold text-[#92400E]">
+    <span className="inline-flex items-center gap-1 rounded-full border border-[#92400E] bg-[#FEF3C7] px-2 py-0.5 text-[11px] font-semibold text-[#92400E]">
+      <img className="size-2.5" src="/figma-assets/review-icon.svg" alt="" />
       검토 필요
     </span>
   );

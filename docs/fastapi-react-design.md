@@ -44,9 +44,9 @@ All React files use `.js`/`.jsx`; TypeScript is not used.
 multipart upload
   -> temporary job directory
   -> PE header validation
-  -> truncate/pad raw bytes
-  -> stage 1 mock Normal/Malware prediction
-  -> stage 2 mock family prediction only for Malware
+  -> stage 1 XGBoost: extract 341 static PE features and score
+  -> Normal / Suspicious / Malware threshold routing
+  -> truncate/pad raw bytes + stage 2 mock family prediction for Suspicious/Malware
   -> in-memory job result + SSE progress event
   -> delete temporary uploaded bytes
 ```
@@ -75,7 +75,13 @@ The browser uploads the file list for a selected folder. A web server cannot ins
 }
 ```
 
-The mock uses a SHA-256 digest of the prepared byte sequence to make repeat analyses deterministic. It is an interface test only and is not a malware detector. A real XGBoost adapter requires a finalized fixed-dimensional representation, while MalConv2 can consume raw byte sequences directly. The application isolates this future decision inside `model_inference_service.py`.
+The imported stage-1 XGBoost bundle uses 341 fixed static PE features (headers,
+sections, imports/exports, directories, overlay and byte histogram). It ships
+the exact feature extractor, feature order, thresholds and file hashes in one
+bundle, which the backend verifies when it starts. Its score is uncalibrated;
+with the exported thresholds, score `< 0.10` is `Normal`, `0.10–<0.90` is
+`Suspicious`, and `≥ 0.90` is `Malware`. Both `Suspicious` and `Malware` are
+passed to stage 2. The current stage-2 SHA-256 mock is an interface test only.
 
 ### Connecting real models later
 
@@ -89,12 +95,13 @@ backend/models/
 └── family_labels.json
 ```
 
-Replace the body of `MockModelInferenceService.predict_stage1()` and
-`predict_stage2()`, but preserve their return values and the `InferenceResult`
-schema. `stage2` must run only when stage 1 returns `Malware`; if its maximum
+The actual stage-1 bundle is stored as `backend/models/stage1_xgboost_bundle/`.
+Do not modify or flatten it: `runtime.py` validates the bundle manifest and the
+feature-extractor source hash. Replace only
+`MockModelInferenceService.predict_stage2()` when the MalConv2 artifact is
+ready. Stage 2 must run for `Suspicious` or `Malware`; if its maximum
 score is below the configured threshold it must return `Unknown` and set
-`is_unknown` to `true`. The stage-1 encoder must be saved with the XGBoost
-model; XGBoost cannot receive a variable-length byte sequence by itself.
+`is_unknown` to `true`.
 
 ## API
 

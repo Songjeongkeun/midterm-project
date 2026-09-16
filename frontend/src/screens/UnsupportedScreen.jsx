@@ -1,15 +1,16 @@
+import AppHeader from "../components/AppHeader";
 import StatusBadge from "../components/StatusBadge";
 
 export default function UnsupportedScreen({ result, onReset }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-950 px-5 py-12 text-slate-100">
-      <section className="w-full max-w-xl rounded-3xl border border-slate-700 bg-slate-900/70 p-8 shadow-2xl sm:p-12">
-        <p className="text-xs font-extrabold tracking-[0.18em] text-sky-300">UNSUPPORTED INPUT</p>
-        <h1 className="mt-3 text-3xl font-black">분석할 수 없는 파일입니다</h1>
-        <p className="mt-5 break-all font-bold">{result.filename}</p>
-        <div className="mt-5"><StatusBadge status="unsupported_error" /></div>
-        <p className="mt-5 rounded-lg bg-[#FEE2E2] p-4 leading-6 text-[#B91C1C]">{result.error_reason || "유효한 PE 파일이 아닙니다."}</p>
-        <button className="mt-8 rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 hover:bg-sky-200" onClick={onReset}>시작 화면으로</button>
+    <main className="min-h-screen bg-[#F9FAFB] font-sans text-[#111827]">
+      <AppHeader onNewAnalysis={onReset} />
+      <section className="mx-auto flex min-h-[calc(100vh-53px)] max-w-[512px] items-center px-5 py-12">
+        <article className="w-full overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.10)]">
+          <div className="border-b border-[#F3F4F6] px-6 py-5"><p className="text-xs text-[#9CA3AF]">분석 불가</p><h1 className="mt-2 text-xl font-bold">분석할 수 없는 파일입니다</h1><p className="mt-3 truncate font-mono text-[11px] text-[#9CA3AF]">{result.filename}</p></div>
+          <div className="px-6 py-5"><StatusBadge status="unsupported_error" /><p className="mt-4 rounded-md border border-[#FECACA] bg-[#FEF2F2] p-3 text-sm leading-6 text-[#B91C1C]">{result.error_reason || "PE 파일이 아닙니다."}</p></div>
+          <div className="border-t border-[#F3F4F6] bg-[#FAFAFA] px-6 py-4"><button className="w-full rounded-md bg-[#1D4ED8] py-2 text-[13px] font-semibold text-white hover:bg-[#1E40AF]" onClick={onReset}>새 파일 또는 폴더 분석</button></div>
+        </article>
       </section>
     </main>
   );

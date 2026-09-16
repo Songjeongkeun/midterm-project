@@ -1,5 +1,7 @@
 // 개발 중에는 FastAPI의 로컬 주소를 쓰고, 배포 시에는 .env의 주소를 사용한다.
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
+// FastAPI를 127.0.0.1로 실행하므로 같은 IPv4 주소를 기본값으로 사용한다.
+// 일부 환경에서 localhost가 IPv6(::1)로 해석되어 연결이 거부되는 일을 막는다.
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api/v1";
 
 async function requestJob(path, body) {
   // FormData를 그대로 보내야 파일의 이진 데이터가 multipart/form-data로 전송된다.
