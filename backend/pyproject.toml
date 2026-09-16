@@ -1,0 +1,25 @@
+[project]
+name = "malware-detection-api"
+version = "0.1.0"
+description = "Read-only static Windows PE analysis API"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "pydantic>=2.9,<3.0",
+  "python-multipart>=0.0.12,<1.0",
+  "uvicorn[standard]>=0.32,<1.0",
+]
+
+[project.optional-dependencies]
+dev = ["httpx>=0.28,<1.0", "pytest>=8.0,<9.0", "ruff>=0.8,<1.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

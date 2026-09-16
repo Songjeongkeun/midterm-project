@@ -1,3 +1,15 @@
 # Local MalImg dataset (large binary files; do not commit)
 /MalImg dataset/
 /MalImg dataset.zip
+
+# Local inference artifacts and short-lived upload workspace configuration
+/backend/model_manifest.json
+/backend/.venv/
+/backend/.pytest_cache/
+/backend/.ruff_cache/
+/backend/models/*.json
+/backend/models/*.pt
+/frontend/node_modules/
+/frontend/dist/
+**/__pycache__/
+.DS_Store
