@@ -1,8 +1,8 @@
 # PE Static Analysis Web
 
-Windows PE 파일을 **실행하거나 수정하지 않고**, 헤더와 원시 바이트를 읽기 전용으로 분석하는 React + FastAPI 웹 애플리케이션입니다. 현재 모델 단계는 전체 UI와 API를 검증하기 위한 **결정적 Mock 구현**입니다. 즉, 화면의 Malware/패밀리 표시는 실제 보안 판정이 아닙니다.
+Windows PE 파일을 **실행하거나 수정하지 않고**, 헤더와 원시 바이트를 읽기 전용으로 분석하는 React + FastAPI 웹 애플리케이션이다. 현재 모델 단계는 전체 UI와 API를 검증하기 위한 **결정적 Mock 구현**이다. 즉, 화면의 Malware/패밀리 표시는 실제 보안 판정이 아니다.
 
-전체 설계와 API 계약은 [문서](docs/fastapi-react-design.md)에 저장되어 있습니다.
+전체 설계와 API 계약은 [문서](docs/fastapi-react-design.md)에 저장한다.
 
 ## 폴더 구조와 역할
 
@@ -49,11 +49,11 @@ npm install
 npm run dev
 ```
 
-브라우저에서 `http://localhost:5173`을 열면 됩니다. API 문서는 백엔드 실행 후 `http://localhost:8000/docs`에서 확인할 수 있습니다.
+브라우저에서 `http://localhost:5173`을 연다. API 문서는 백엔드 실행 후 `http://localhost:8000/docs`에서 확인한다.
 
 ## 모델을 넣을 위치
 
-실제 모델 파일은 Git에 올리지 말고 `backend/models/`에 둡니다.
+실제 모델 파일은 Git에 올리지 말고 `backend/models/`에 둔다.
 
 ```text
 backend/
@@ -63,11 +63,11 @@ backend/
 └── app/services/model_inference_service.py
 ```
 
-`model_inference_service.py`의 `MockModelInferenceService`를 실제 어댑터로 교체하되, `predict_stage1()`과 `predict_stage2()`의 반환 형식은 유지하세요. 특히 XGBoost는 바이트 시퀀스를 직접 받지 못하므로 학습 때 사용한 고정 길이 인코더/특징 변환을 함께 저장하고 추론 때 똑같이 적용해야 합니다.
+`model_inference_service.py`의 `MockModelInferenceService`를 실제 어댑터로 교체하되, `predict_stage1()`과 `predict_stage2()`의 반환 형식은 유지한다. 특히 XGBoost는 바이트 시퀀스를 직접 받지 못하므로 학습 때 사용한 고정 길이 인코더·특징 변환을 함께 저장하고 추론 때 똑같이 적용한다.
 
 ## 주의사항
 
-- 확장자는 판별 근거가 아닙니다. MZ, PE 오프셋, `PE\0\0`, COFF 헤더 범위를 확인합니다.
-- 업로드 파일은 분석 작업 중에만 서버 임시 디렉터리에 저장하고, 종료 시 삭제합니다. 결과 메타데이터도 서버 재시작 시 사라집니다.
-- 폴더 결과는 선택된 순서를 유지하며 정렬·검색·필터·내보내기 기능을 제공하지 않습니다.
-- `Normal`을 포함한 모든 모델 결과는 **검토 필요**입니다. 이 앱은 악성 여부를 확정하거나 파일을 치료·격리·삭제하지 않습니다.
+- 확장자는 판별 근거가 아니다. MZ, PE 오프셋, `PE\0\0`, COFF 헤더 범위를 확인한다.
+- 업로드 파일은 분석 작업 중에만 서버 임시 디렉터리에 저장하고, 종료 시 삭제한다. 결과 메타데이터도 서버 재시작 시 사라진다.
+- 폴더 결과는 선택된 순서를 유지하며 정렬·검색·필터·내보내기 기능을 제공하지 않는다.
+- `Normal`을 포함한 모든 모델 결과는 **검토 필요**다. 이 앱은 악성 여부를 확정하거나 파일을 치료·격리·삭제하지 않는다.
