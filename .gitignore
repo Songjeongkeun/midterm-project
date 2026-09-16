@@ -13,3 +13,8 @@
 /frontend/dist/
 **/__pycache__/
 .DS_Store
+venv
+/stage1/artifacts/
+/stage1/bodmas_metadata.csv
+/stage1/bodmas_meta_disarm.csv
+**/.ipynb_checkpoints/
