@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "evaluation_models": {
+    "train": "final_model.pth",
+    "val": "final_model.pth",
+    "test": "best_model.pth"
+  },
+  "evaluation_status": "completed",
+  "position": {
+    "completed_epochs": 30,
+    "current_epoch": 31,
+    "completed_groups": 0,
+    "total_groups": 0,
+    "phase": "train",
+    "updates": 3750
+  },
+  "best_epoch": 29,
+  "best_val_macro_f1": 0.8673592747015199,
+  "runtime": {
+    "batch_size": 128,
+    "chunk_bytes": 65536,
+    "winner_windows": 256,
+    "oom_retries": 0
+  }
+}

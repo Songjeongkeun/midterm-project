@@ -1,17 +1,12 @@
 // Figma의 공통 상단 바를 모든 분석 상태에서 재사용한다.
-export default function AppHeader({ onNewAnalysis }) {
+export default function AppHeader() {
+  // 상단은 서비스 식별만 담당한다. 새 분석은 각 화면의 맥락에 맞는 버튼으로
+  // 제공하므로 헤더 오른쪽의 중복 버튼은 두지 않는다.
   return (
-    <header className="flex h-[53px] items-center justify-between border-b border-[#E5E7EB] bg-white px-5">
-      <div className="flex items-center gap-2.5">
-        <span className="grid size-6 place-items-center rounded bg-linear-to-br from-[#1D4ED8] to-[#4F46E5]">
-          <img className="size-3" src="/figma-assets/brand-shield.svg" alt="" />
-        </span>
-        <span className="text-[13px] font-bold tracking-[-0.02em] text-[#111827]">PE 악성코드 분석기</span>
-        <span className="rounded bg-[#F3F4F6] px-1.5 py-0.5 text-[10px] text-[#6B7280]">v1.0</span>
-      </div>
-      <button className="rounded border border-[#E5E7EB] bg-[#F3F4F6] px-3 py-1.5 text-xs text-[#374151] hover:bg-[#E5E7EB]" onClick={onNewAnalysis}>
-        + 새 분석
-      </button>
+    <header className="flex h-[88px] items-center border-b border-[#E5E7EB] bg-white px-6 sm:px-10">
+      {/* 사용자가 제공한 로고에 서비스명과 버전이 이미 포함되어 있어 기존
+          아이콘·텍스트·별도 버전 배지 대신 하나의 이미지로 표시한다. */}
+      <img className="h-14 w-auto object-contain sm:h-[60px]" src="/figma-assets/malware-detector-logo.png" alt="너의 악성코드가 보여 - Malware Detector v1.0" />
     </header>
   );
 }

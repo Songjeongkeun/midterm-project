@@ -1,0 +1,8 @@
+{
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "precision": "bf16",
+  "repo_commit": "b5a865420e984b22a2474834bd1748318e84b553",
+  "dataset_bytes": 29816222027
+}

@@ -1,3 +1,5 @@
+// API progress 객체의 키와 사람이 읽는 표기를 한 곳에 묶는다. 여기 순서가
+// 카드 표시 순서이므로, 서버가 파일을 처리하는 순서와는 별개다.
 const labels = [
   ["전체 탐색", "total_files"],
   ["유효 PE", "valid_pe_files"],

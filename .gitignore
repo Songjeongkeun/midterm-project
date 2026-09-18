@@ -7,8 +7,10 @@
 /backend/.venv/
 /backend/.pytest_cache/
 /backend/.ruff_cache/
+/backend/.env
 /backend/models/*.json
 /backend/models/*.pt
+/backend/models/stage2/*.pth
 /backend/models/stage1_xgboost_bundle/
 /frontend/node_modules/
 /frontend/dist/
@@ -19,3 +21,8 @@ venv
 /stage1/bodmas_metadata.csv
 /stage1/bodmas_meta_disarm.csv
 **/.ipynb_checkpoints/
+
+# API 키가 담길 수 있는 환경 설정 파일은 저장소에 올리지 않는다.
+.env
+.env.*
+!.env.example

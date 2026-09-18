@@ -1,0 +1,4 @@
+{
+  "family_confidence_threshold": 0.7,
+  "note": "검증 데이터 기반 보정 전의 임시 Unknown 처리 기준"
+}

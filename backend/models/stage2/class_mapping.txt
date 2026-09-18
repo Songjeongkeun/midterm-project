@@ -1,0 +1,17 @@
+0	adware
+1	backdoor
+2	benign
+3	clicker
+4	coinminer
+5	downloader
+6	dropper
+7	generic
+8	iframe
+9	injector
+10	phishing
+11	ransomware
+12	redirector
+13	spyware
+14	trojan
+15	virus
+16	worm
